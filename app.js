@@ -24,6 +24,8 @@ class Clock
                 this.endTimer();
             }
 
+            // the resolve callback is the success version
+            // while the reject callback is the fail version
             let promise = new Promise((resolve, reject)=>
             {
                 setTimeout(()=> resolve(displayText(this.getTime())), 1000);
@@ -37,7 +39,7 @@ class Clock
     {
         let promise = new Promise((res, rej)=>
         {
-            setTimeout((res)=>{displayText('Timer has ended!'), process.exit(0)}, 1000);
+            setTimeout(()=>{res(displayText('Timer has ended!'), process.exit(0))}, 1000);
         });
 
         await promise;
