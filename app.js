@@ -1,49 +1,67 @@
 var stdin = process.stdin;
 stdin.setEncoding('utf-8');
 
-console.log('Please enter a numeric value, or type exit to close the program');
+console.log('To set a timer, use this format: seconds/minutes/hours. You can also enter the word exit to stop the application.');
+console.log('How long would you like the timer for? ');
 
 class Clock 
 {
     constructor(seconds)
     {
-        var _seconds = seconds;
-        console.log(this.seconds);
+        this._seconds = seconds;
         this.setTime = function(seconds){_seconds = seconds};
         this.getTime = function(){return _seconds};
     }
 
-    startTimer()
+    // async means the function will return a promise
+    async startTimer()
     {
-        console.log('starting timer');
-        for (let i = this._seconds; i > 0; i--)
+        for (let i = this._seconds; i >= 0; i--)
         {
-            if (this._seconds == 0)
+            if (i == 0)
             {
                 this.endTimer();
             }
-            else
+
+            let promise = new Promise((resolve, reject)=>
             {
-                setTimeout(()=>{}, 1000);
-                console.log(this._seconds);
-            }
+                setTimeout(()=> resolve(i), 1000);
+            });
+
+            let secondsRemaining = await promise;
+            console.log(secondsRemaining);
         }
     }
 
-    endTimer()
+    async endTimer()
     {
+        let promise = new Promise((res, rej)=>
+        {
+            setTimeout((res)=>{process.exit();}, 1000);
+        });
+
+        let placeholder = await promise;
+
         console.log('Time has ended.');
-        process.exit();
+        
     }
 }
 
 stdin.on('data', (data)=>
 {
-    if (data.trim() == 'exit')
+    if (data == null || data == 'undefined')
     {
-        console.log('exiting now.');
+        console.log('Unexpected input detected, exiting the application now.');
         process.exit();
     }
+
+    if (data.trim() == 'exit')
+    {
+        console.log('Stopping the application now.');
+        process.exit();
+    }
+
+    let seconds = convertToSeconds(data);
 
     stdin.emit('input', data.trim());
 });
@@ -55,5 +73,14 @@ stdin.on('input', (data)=>
 
     let seconds = parseInt(data, 10);
     let clock = new Clock(seconds);
-    // clock.startTimer();
-})
+    clock.startTimer();
+});
+
+function convertToSeconds(data)
+{
+    let dataArray = data.split('/');
+    for (data of dataArray)
+    {
+        
+    }
+}
