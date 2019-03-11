@@ -9,8 +9,8 @@ class Clock
     constructor(seconds)
     {
         this._seconds = seconds;
-        this.setTime = function(seconds){_seconds = seconds};
-        this.getTime = function(){return _seconds};
+        this.setTime = function(seconds){this._seconds = seconds};
+        this.getTime = function(){return this._seconds};
     }
 
     // async means the function will return a promise
@@ -26,10 +26,10 @@ class Clock
 
             let promise = new Promise((resolve, reject)=>
             {
-                setTimeout(()=> resolve(displayText(this._seconds)), 1000);
+                setTimeout(()=> resolve(displayText(this.getTime())), 1000);
             });
 
-            let secondsRemaining = await promise;
+            await promise;
         }
     }
 
@@ -40,7 +40,7 @@ class Clock
             setTimeout((res)=>{displayText('Timer has ended!'), process.exit(0)}, 1000);
         });
 
-        let placeholder = await promise;
+        await promise;
     }
 }
 
