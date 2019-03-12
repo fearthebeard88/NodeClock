@@ -28,11 +28,37 @@ class Clock
             // while the reject callback is the fail version
             let promise = new Promise((resolve, reject)=>
             {
-                setTimeout(()=> resolve(displayText(this.getTime())), 1000);
+                setTimeout(()=>
+                resolve(
+                    displayText(this.convertToStandard(this.getTime()),
+                    1000)
+                ));
             });
 
             await promise;
         }
+    }
+
+    convertToStandard(time)
+    {
+        if (time <= 60)
+        {
+            return time;
+        }
+
+        var min = 0;
+        while (time > 60)
+        {
+            time = time - 60;
+            min++;
+        }
+
+        if (time < 10)
+        {
+            time = `0${time}`;
+        }
+
+        return `${min}:${time}`;
     }
 
     async endTimer()
