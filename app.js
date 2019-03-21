@@ -1,88 +1,37 @@
 var stdin = process.stdin;
 stdin.setEncoding('utf-8');
+const {convertToSeconds, stdOverwrite} = require('./helper/clock-helper');
+const Clock = require('./model/Clock');
+
+// let i = 3;
+// let test = function(time)
+// {
+//     if (i <= -1)
+//     {
+//         clearInterval(test);
+//         process.exit();
+//     }
+
+//     console.log(i);
+//     i--;
+// }
+
+// setInterval(test, 1000, i);
 
 process.stdout.write('To set a timer, use this format: seconds/minutes/hours. You can also enter the word exit to stop the application.\n');
 process.stdout.write('How long would you like the timer for?\n ');
-
-class Clock 
-{
-    constructor(seconds)
-    {
-        this._seconds = seconds;
-        this.setTime = function(seconds){this._seconds = seconds};
-        this.getTime = function(){return this._seconds};
-    }
-
-    // async means the function will return a promise
-    async startTimer()
-    {
-        for (let i = this._seconds; i >= 0; i--)
-        {
-            this._seconds--;
-            if (i == 0)
-            {
-                this.endTimer();
-            }
-
-            // the resolve callback is the success version
-            // while the reject callback is the fail version
-            let promise = new Promise((resolve, reject)=>
-            {
-                setTimeout(()=>
-                resolve(
-                    displayText(this.convertToStandard(this.getTime()),
-                    1000)
-                ));
-            });
-
-            await promise;
-        }
-    }
-
-    convertToStandard(time)
-    {
-        if (time <= 60)
-        {
-            return time;
-        }
-
-        var min = 0;
-        while (time > 60)
-        {
-            time = time - 60;
-            min++;
-        }
-
-        if (time < 10)
-        {
-            time = `0${time}`;
-        }
-
-        return `${min}:${time}`;
-    }
-
-    async endTimer()
-    {
-        let promise = new Promise((res, rej)=>
-        {
-            setTimeout(()=>{res(displayText('Timer has ended!'), process.exit(0))}, 1000);
-        });
-
-        await promise;
-    }
-}
 
 stdin.on('data', (data)=>
 {
     if (data == null || data == 'undefined')
     {
-        displayText('Unexpected input detected, exiting the application now.');
+        stdOverwrite('Unexpected input detected, exiting the application now.');
         process.exit(1);
     }
 
     if (data.trim() == 'exit')
     {
-        displayText('Stopping the application now.');
+        stdOverwrite('Stopping the application now.');
         process.exit(2);
     }
 
@@ -98,47 +47,7 @@ stdin.on('data', (data)=>
 
 stdin.on('input', (data)=>
 {
-    // process data/time into seconds and pass into Clock instance
-    // start the timer
-
-    let seconds = parseInt(data, 10);
-    let clock = new Clock(seconds);
+    let clock = new Clock(data);
     clock.startTimer();
 });
 
-function convertToSeconds(data)
-{
-    let dataArray = data.split('/');
-    if (dataArray.length == 1)
-    {
-        return dataArray[0];
-    }
-    else if (dataArray.length == 2)
-    {
-        return dataArray[0] + (dataArray[1] * 60);
-    }
-    else if (dataArray.length == 3)
-    {
-        return dataArray[0] + dataArray[1] * 60 + (dataArray[2] * 24) * 60;
-    }
-    else
-    {
-        displayText('Too many numbers in input.');
-        process.exit(1);
-    }
-}
-
-function displayText(msg)
-{
-    if (typeof msg == 'number')
-    {
-        msg = msg.toString();
-    }
-
-    let stdout = process.stdout;
-
-    stdout.clearLine();
-    stdout.cursorTo(0);
-    stdout.write(msg);
-    return;
-}
