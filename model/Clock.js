@@ -27,7 +27,7 @@ class Clock
 
     convertToStandard(time)
     {
-        if (time <= 60 && time > 10)
+        if (time <= 60 && time >= 10)
         {
             return `:${time}`;
         }
@@ -37,8 +37,9 @@ class Clock
             return `:0${time}`;
         }
 
-        let minutes = (time/60).toFixed(2);
-        return minutes;
+        let minutes = Math.floor(time/60);
+        let seconds = time - minutes * 60;
+        return `${minutes}:${seconds}`;
     }
 
     endTimer(timer)

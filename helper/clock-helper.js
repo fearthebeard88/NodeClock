@@ -1,24 +1,27 @@
 var stdin = process.stdin;
 stdin.setEncoding('utf-8');
+const divider = '/';
 
 module.exports = {
     convertToSeconds(data)
     {
-        let dataArray = data.split('/');
+        let dataArray = data.split(divider);
         if (dataArray.length == 1)
         {
-            return dataArray[0];
+            return parseInt(dataArray[0], 10);
         }
         else if (dataArray.length == 2)
         {
-            return dataArray[0] + (dataArray[1] * 60);
+            let seconds = parseInt(dataArray[0], 10);
+            let minutes = parseInt(dataArray[1], 10);
+            return seconds + (minutes * 60);
         }
         else if (dataArray.length == 3)
         {
-            // seconds = seconds
-            // minutes = seconds * 60
-            // hours = minutes * 60 (seconds * 60 * 60)
-            return dataArray[0] + dataArray[1] * 60 + (dataArray[2] * 60) * 60;
+            let seconds = parseInt(dataArray[0], 10);
+            let minutes = parseInt(dataArray[1], 10);
+            let hours = parseInt(dataArray[2], 10);
+            return seconds + (minutes * 60) + ((hours * 60) * 60);
         }
         else
         {
