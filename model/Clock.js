@@ -27,7 +27,7 @@ class Clock
 
     convertToStandard(time)
     {
-        if (time <= 60 && time >= 10)
+        if (time <= 59 && time >= 10)
         {
             return `:${time}`;
         }
@@ -39,6 +39,12 @@ class Clock
 
         let minutes = Math.floor(time/60);
         let seconds = time - minutes * 60;
+        
+        if (seconds < 10)
+        {
+            return `${minutes}:0${seconds}`;
+        }
+
         return `${minutes}:${seconds}`;
     }
 
